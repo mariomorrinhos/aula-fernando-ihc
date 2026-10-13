@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliações - Protótipo Acadêmico</title>
+    <style>
+        /* Reset e Base */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; 
+            /* Fundo escuro semi-transparente simulando que a página 'produto.html' está por trás */
+            background-color: rgba(0, 0, 0, 0.6); 
+            height: 100vh; 
+            display: flex; 
+            align-items: flex-end; /* Para o bottom-sheet encostar embaixo no mobile */
+            justify-content: center; /* Para centralizar no desktop */
+        }
+        
+        /* Modal / Bottom Sheet */
+        .modal-container { 
+            background: white; 
+            width: 100%; 
+            border-radius: 16px 16px 0 0; 
+            padding: 25px 20px; 
+            box-sizing: border-box; 
+            position: relative; 
+            animation: slideUp 0.3s ease-out; 
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+        }
+        @keyframes slideUp { 
+            from { transform: translateY(100%); } 
+            to { transform: translateY(0); } 
+        }
+        
+        /* Botão Fechar */
+        .close-btn { 
+            position: absolute; 
+            top: 20px; 
+            right: 20px; 
+            background: #f3f3f3;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #111; 
+            text-decoration: none; 
+            transition: background 0.2s;
+        }
+        .close-btn:hover { background: #e0e0e0; }
+        .close-btn svg { width: 18px; height: 18px; }
+        
+        /* Cabeçalho das Notas */
+        .rating-header { display: flex; align-items: center; margin-bottom: 5px; }
+        .rating-score { font-size: 32px; font-weight: bold; margin-right: 10px; color: #0f1111;}
+        .stars { color: #de7921; font-size: 22px; }
+        .rating-count { color: #555; font-size: 14px; margin-bottom: 20px; }
+        
+        /* Correção Heurística 10: Resumo IA (Alívio Cognitivo) */
+        .ai-summary { 
+            background-color: #f0f8ff; 
+            border: 1px solid #cce0ff; 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin-bottom: 25px; 
+        }
+        .ai-summary h4 { 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 8px 0; 
+            font-size: 14px; 
+            color: #007185; 
+        }
+        .ai-summary p { margin: 0; font-size: 14px; color: #333; line-height: 1.5; }
+
+        /* Barras de progresso */
+        .bar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .bar-row { 
+            display: flex; 
+            align-items: center; 
+            font-size: 14px; 
+            color: #007185;
+            cursor: pointer;
+        }
+        .bar-row:hover .star-label { text-decoration: underline; color: #c45500;}
+        .star-label { width: 25%; text-align: left; padding-right: 10px; }
+        .bar-bg { 
+            flex: 1; 
+            height: 16px; 
+            background-color: #f0f2f2; 
+            border: 1px solid #d5d9d9; 
+            border-radius: 4px; 
+            overflow: hidden; 
+        }
+        .bar-fill { height: 100%; background-color: #de7921; border-radius: 2px 0 0 2px;}
+        .percent-label { width: 15%; text-align: right; color: #0f1111; }
+
+        /* Links e Footer Interno */
+        .all-reviews-link { 
+            display: block; 
+            text-align: center; 
+            color: #007185; 
+            font-size: 15px;
+            font-weight: bold; 
+            text-decoration: none; 
+            margin-top: 25px; 
+            border-top: 1px solid #e7e7e7; 
+            padding-top: 20px; 
+        }
+        .all-reviews-link:hover { color: #c45500; text-decoration: underline; }
+
+        .disclaimer {
+            text-align: center;
+            font-size: 11px;
+            color: #888;
+            margin-top: 20px;
+        }
+
+        /* Desktop Adjustments */
+        @media (min-width: 600px) {
+            body {
+                align-items: center; /* Centraliza a modal no meio da tela */
+            }
+            .modal-container {
+                width: 450px;
+                border-radius: 12px;
+                animation: fadeIn 0.2s ease-out;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: scale(0.95); }
+                to { opacity: 1; transform: scale(1); }
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal-container" role="dialog" aria-labelledby="modalTitle">
+        <!-- Retorna para a tela de Produto ao fechar -->
+        <a href="produto.html" class="close-btn" aria-label="Fechar avaliações">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </a>
+        
+        <div class="rating-header" id="modalTitle">
+            <span class="rating-score">4,4</span>
+            <span class="stars" aria-label="4,4 de 5 estrelas">★★★★☆</span>
+        </div>
+        <div class="rating-count">65 classificações globais</div>
+
+        <!-- Aplicação da Correção (Resumo Rápido para aliviar Carga Cognitiva) -->
+        <div class="ai-summary">
+            <h4>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline><polyline points="7.5 19.79 7.5 14.6 3 12"></polyline><polyline points="21 12 16.5 14.6 16.5 19.79"></polyline><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                Resumo das avaliações gerado por IA
+            </h4>
+            <p>Os clientes elogiam a <strong>qualidade de impressão e velocidade</strong> do equipamento. No entanto, alguns compradores relatam que o software de fatiamento fornecido com a impressora pode apresentar uma curva de aprendizagem acentuada no início.</p>
+        </div>
+
+        <div class="bar-container">
+            <div class="bar-row">
+                <div class="star-label">5 estrelas</div>
+                <div class="bar-bg"><div class="bar-fill" style="width: 80%;"></div></div>
+                <div class="percent-label">80%</div>
+            </div>
+            <div class="bar-row">
+                <div class="star-label">4 estrelas</div>
+                <div class="bar-bg"><div class="bar-fill" style="width: 6%;"></div></div>
+                <div class="percent-label">6%</div>
+            </div>
+            <div class="bar-row">
+                <div class="star-label">3 estrelas</div>
+                <div class="bar-bg"><div class="bar-fill" style="width: 4%;"></div></div>
+                <div class="percent-label">4%</div>
+            </div>
+            <div class="bar-row">
+                <div class="star-label">2 estrelas</div>
+                <div class="bar-bg"></div>
+                <div class="percent-label">0%</div>
+            </div>
+            <div class="bar-row">
+                <div class="star-label">1 estrela</div>
+                <div class="bar-bg"><div class="bar-fill" style="width: 10%;"></div></div>
+                <div class="percent-label">10%</div>
+            </div>
+        </div>
+
+        <a href="#" class="all-reviews-link">Consulte todas as avaliações dos clientes ›</a>
+
+        <div class="disclaimer">
+            Aviso Acadêmico: Simulação desenvolvida para a disciplina de IHC. Nenhuma IA real conectada.
+        </div>
+    </div>
+
+</body>
+</html>

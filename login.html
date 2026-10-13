@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Protótipo Acadêmico</title>
+    <style>
+        /* Reset e Base */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background-color: #f3f3f3; /* Desktop background */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+        }
+
+        /* Container Principal */
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 50px;
+            padding: 0 15px;
+        }
+
+        /* Logo */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .logo { 
+            font-size: 32px; 
+            font-weight: bold; 
+            color: #111;
+        }
+        .logo span { 
+            font-weight: normal; 
+            font-size: 18px; 
+        }
+
+        /* Cartão de Login */
+        .card { 
+            background-color: white; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 30px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+        }
+
+        h1 { 
+            font-size: 28px; 
+            margin-bottom: 25px; 
+            font-weight: 500; 
+            color: #111;
+        }
+
+        /* Formulários */
+        .input-group { margin-bottom: 20px; }
+        label { 
+            display: block; 
+            font-weight: bold; 
+            margin-bottom: 8px; 
+            font-size: 14px; 
+            color: #111;
+        }
+        input[type="email"], input[type="password"], input[type="text"] { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #a6a6a6; 
+            border-radius: 4px; 
+            font-size: 16px; 
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus {
+            border-color: #e77600;
+            box-shadow: 0 0 3px 2px rgba(228,121,17,.5);
+            outline: none;
+        }
+
+        /* Correção Heurística 08 (Visibilidade da Senha) */
+        .password-container { position: relative; }
+        .toggle-password { 
+            position: absolute; 
+            right: 5px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background: transparent; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 20px; 
+            padding: 10px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        .toggle-password:focus {
+            outline: 2px solid #007185;
+        }
+
+        .forgot-password {
+            font-size: 13px; 
+            text-decoration: none; 
+            color: #007185;
+            float: right;
+            margin-top: 2px;
+        }
+        .forgot-password:hover { text-decoration: underline; color: #c45500; }
+
+        /* Botões */
+        .btn-primary { 
+            width: 100%; 
+            padding: 12px; 
+            background-color: #ffd814; 
+            border: 1px solid #fcd200; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            margin-top: 10px; 
+            box-shadow: 0 2px 5px 0 rgba(213,217,217,.5);
+        }
+        .btn-primary:hover { background-color: #f7ca00; border-color: #f2c200; }
+        .btn-primary:focus { outline: 2px solid #007185; outline-offset: 2px; }
+
+        .btn-secondary { 
+            width: 100%; 
+            padding: 12px; 
+            background-color: #ffffff; 
+            border: 1px solid #d5d9d9; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            box-shadow: 0 2px 5px 0 rgba(213,217,217,.5);
+        }
+        .btn-secondary:hover { background-color: #f7fafa; }
+
+        /* Divisória */
+        .divider { 
+            display: flex; 
+            align-items: center; 
+            text-align: center; 
+            margin: 25px 0; 
+            color: #767676; 
+            font-size: 13px; 
+        }
+        .divider::before, .divider::after { 
+            content: ''; 
+            flex: 1; 
+            border-bottom: 1px solid #e7e7e7; 
+        }
+        .divider:not(:empty)::before { margin-right: 1em; }
+        .divider:not(:empty)::after { margin-left: 1em; }
+
+        /* Rodapé */
+        footer { 
+            margin-top: 40px; 
+            text-align: center; 
+            font-size: 12px; 
+            color: #555; 
+            padding: 20px; 
+            width: 100%; 
+        }
+        .footer-links { margin-bottom: 15px; }
+        .footer-links a { color: #007185; text-decoration: none; margin: 0 10px; }
+        .footer-links a:hover { text-decoration: underline; }
+
+        /* Responsividade (Mobile First -> Adaptações) */
+        @media (max-width: 600px) {
+            body { 
+                background-color: white; /* No mobile, o fundo é branco para maximizar o contraste */
+            }
+            .container {
+                margin-top: 20px;
+                padding: 0 20px;
+                max-width: 100%;
+            }
+            .card {
+                border: none; /* Remove a borda do cartão no celular para parecer nativo */
+                box-shadow: none;
+                padding: 10px 0;
+            }
+            h1 { font-size: 24px; }
+            footer {
+                border-top: 1px solid #ddd;
+                background-color: #f3f3f3; /* Rodapé cinza para separar do conteúdo no mobile */
+                padding-bottom: 40px;
+            }
+            /* Melhoria de Hitbox (Prevenção de Erros - IHC) */
+            input[type="email"], input[type="password"], input[type="text"], .btn-primary, .btn-secondary {
+                padding: 14px; /* Áreas de clique maiores em telas de toque */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo-container">
+            <div class="logo">amazon<span>.com.br</span></div>
+        </div>
+
+        <div class="card">
+            <h1>Fazer login</h1>
+            
+            <form action="index.html" method="GET">
+                <div class="input-group">
+                    <label for="email">E-mail ou número de telefone celular</label>
+                    <input type="email" id="email" value="alunos@ifgoiano.edu.br" required aria-label="E-mail ou número de telefone celular">
+                </div>
+                
+                <div class="input-group">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                        <label for="password">Senha</label>
+                        <a href="#" class="forgot-password">Esqueci a senha</a>
+                    </div>
+                    <div class="password-container">
+                        <input type="password" id="password" value="ananda_joao_mario_e_tahlytha" required aria-label="Senha">
+                        <!-- Correção Heurística 08 (Visibilidade do Sistema e Prevenção de Erros) -->
+                        <!-- Usando SVG puro para evitar dependências externas e garantir visibilidade -->
+                        <button type="button" class="toggle-password" id="toggleBtn" onclick="togglePassword()" title="Mostrar senha" aria-label="Mostrar ou ocultar senha">
+                            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">Continuar</button>
+            </form>
+
+            <div class="divider">Novo na Amazon?</div>
+
+            <button class="btn-secondary" onclick="window.location.href='#'">Criar sua conta da Amazon</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">Condições de Uso</a>
+            <a href="#">Notificação de Privacidade</a>
+            <a href="#">Ajuda</a>
+        </div>
+        <p><strong>Aviso Acadêmico:</strong> Protótipo responsivo (Disciplina de IHC).</p>
+        <p>Não insira dados reais. Nenhuma transação será realizada.</p>
+        <p>&copy; 2026 Grupo IF/Amazon - TSI</p>
+    </footer>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            const toggleBtn = document.getElementById("toggleBtn");
+            const eyeIcon = document.getElementById("eyeIcon");
+            
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleBtn.title = "Ocultar senha";
+                // Muda o ícone para "olho riscado"
+                eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+            } else {
+                passwordInput.type = "password";
+                toggleBtn.title = "Mostrar senha";
+                // Volta ao ícone de "olho aberto"
+                eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            }
+        }
+    </script>
+</body>
+</html>

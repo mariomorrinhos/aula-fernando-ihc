@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Protótipo Acadêmico</title>
+    <style>
+        /* Reset e Base */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f3f3f3; 
+            padding-bottom: 70px; /* Espaço para o Bottom Nav */
+        }
+        
+        /* Container Principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            min-height: 100vh;
+        }
+
+        /* Header e Busca */
+        header { 
+            background-color: #232f3e; 
+            padding: 10px 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            color: white; 
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-left, .header-right { display: flex; align-items: center; gap: 15px; }
+        .menu-icon { font-size: 24px; cursor: pointer; }
+        .logo { font-size: 22px; font-weight: bold; margin-top: -5px;}
+        .cart-icon { font-size: 24px; cursor: pointer; position: relative; }
+        .cart-count { 
+            position: absolute; 
+            top: -5px; 
+            right: -10px; 
+            background: #f08804; 
+            color: #111; 
+            border-radius: 50%; 
+            padding: 2px 6px; 
+            font-size: 12px; 
+            font-weight: bold; 
+        }
+        
+        .search-bar-container { background-color: #131921; padding: 10px 15px; }
+        .search-bar { 
+            display: flex; 
+            max-width: 800px; 
+            margin: 0 auto; 
+        }
+        .search-bar input { 
+            flex: 1; 
+            padding: 12px 15px; 
+            border: none; 
+            border-radius: 4px 0 0 4px; 
+            font-size: 16px; 
+        }
+        .search-bar button { 
+            padding: 12px 20px; 
+            background-color: #febd69; 
+            border: none; 
+            border-radius: 0 4px 4px 0; 
+            cursor: pointer; 
+            font-size: 18px; 
+        }
+        .search-bar button:hover { background-color: #f3a847; }
+        
+        /* Banner Principal */
+        .hero-banner { 
+            background: linear-gradient(135deg, #007185, #0096B2); 
+            color: white; 
+            padding: 40px 20px 60px 20px; 
+            text-align: center; 
+        }
+        .hero-banner h2 { margin: 0 0 10px 0; font-size: 28px;}
+        .hero-banner p { font-size: 18px; margin: 0; }
+        
+        .dots { text-align: center; margin-top: -30px; margin-bottom: 20px; position: relative; z-index: 10;}
+        .dot { display: inline-block; width: 10px; height: 10px; background-color: rgba(255,255,255,0.5); border-radius: 50%; margin: 0 5px; cursor: pointer; }
+        .dot.active { background-color: white; }
+
+        /* Seções de Conteúdo */
+        .section-title { padding: 20px 15px 10px 15px; font-size: 20px; font-weight: bold; margin: 0; color: #111; }
+        
+        /* Correção Heurística 07: Compre Novamente na Home */
+        .reorder-container { padding: 0 15px; }
+        .reorder-scroll { 
+            display: flex; 
+            overflow-x: auto; 
+            gap: 15px; 
+            padding-bottom: 15px;
+            /* Ocultar scrollbar visualmente, mas manter funcionalidade */
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
+        }
+        .reorder-scroll::-webkit-scrollbar { display: none; }
+        
+        .reorder-item { 
+            min-width: 140px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 15px; 
+            text-align: center; 
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .reorder-img { 
+            width: 100px; 
+            height: 100px; 
+            background-color: #f5f5f5; 
+            margin: 0 auto 10px auto; 
+            border-radius: 4px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 12px; 
+            color: #666; 
+            border: 1px solid #eee;
+        }
+        .reorder-title { font-size: 14px; color: #333; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .reorder-price { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #B12704;}
+        
+        .reorder-btn { 
+            background-color: #ffd814; 
+            border: 1px solid #fcd200; 
+            border-radius: 20px; 
+            padding: 8px 10px; 
+            font-size: 13px; 
+            font-weight: 500;
+            cursor: pointer; 
+            width: 100%; 
+            transition: background 0.2s;
+        }
+        .reorder-btn:hover { background-color: #f7ca00; }
+        .reorder-btn:active { background-color: #e3b900; }
+
+        /* Grade de Categorias */
+        .category-container { padding: 10px 15px 30px 15px; }
+        .category-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+            gap: 15px; 
+        }
+        .category-card { 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 20px 10px; 
+            text-align: center; 
+            font-weight: bold; 
+            cursor: pointer; 
+            background: #fff; 
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: #333;
+        }
+        .category-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); color: #007185;}
+        
+        /* Navegação Inferior (Mobile Fixa) */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            max-width: 1200px;
+            background: white; 
+            border-top: 1px solid #ddd; 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 10px 0; 
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); 
+            z-index: 1000;
+        }
+        .nav-item { 
+            text-align: center; 
+            font-size: 12px; 
+            color: #555; 
+            text-decoration: none; 
+            cursor: pointer; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav-item svg { width: 24px; height: 24px; stroke: #555; fill: none;}
+        .nav-item.active { color: #007185; font-weight: bold; }
+        .nav-item.active svg { stroke: #007185; fill: rgba(0, 113, 133, 0.1);}
+
+        /* Correção Heurística 03 (Controle de Erro / Toast Notification) */
+        .toast { 
+            visibility: hidden; 
+            min-width: 280px; 
+            background-color: #333; 
+            color: #fff; 
+            border-radius: 8px; 
+            padding: 16px; 
+            position: fixed; 
+            z-index: 1001; 
+            left: 50%; 
+            bottom: 80px; 
+            transform: translateX(-50%); 
+            font-size: 14px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .toast.show { 
+            visibility: visible; 
+            animation: fadein 0.3s, fadeout 0.3s 4.7s; 
+        }
+        .undo-btn { 
+            color: #febd69; 
+            background: none; 
+            border: none; 
+            font-weight: bold; 
+            cursor: pointer; 
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .undo-btn:hover { color: #f3a847; text-decoration: underline;}
+
+        footer { 
+            text-align: center; 
+            font-size: 12px; 
+            color: #555; 
+            padding: 30px 20px; 
+            background: #fff; 
+            border-top: 1px solid #ddd;
+            margin-bottom: 20px; /* Space above bottom nav */
+        }
+
+        /* Animações Toast */
+        @keyframes fadein { from { bottom: 60px; opacity: 0; } to { bottom: 80px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 80px; opacity: 1; } to { bottom: 60px; opacity: 0; } }
+
+        /* Media Queries / Responsividade */
+        @media (min-width: 768px) {
+            .bottom-nav { display: none; } /* Esconder bottom nav no desktop */
+            body { padding-bottom: 0; }
+            .hero-banner { padding: 60px 20px 80px 20px; }
+            .hero-banner h2 { font-size: 36px; }
+            .search-bar input { font-size: 15px; }
+            
+            /* Ajusta a grade para desktop */
+            .reorder-scroll { padding-bottom: 25px; }
+            .reorder-item { min-width: 180px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <div class="menu-icon" aria-label="Menu Principal">☰</div>
+                <div class="logo">amazon</div>
+            </div>
+            <div class="header-right">
+                <div class="cart-icon" onclick="window.location.href='carrinho.html'" aria-label="Acessar Carrinho">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    <span class="cart-count" id="cartBadge">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="search-bar-container">
+            <div class="search-bar">
+                <!-- Rota para Produto: Simulando a busca focada (Persona Lucas) -->
+                <input type="text" placeholder="Pesquisar Amazon.com.br" value="Impressora 3D Flashforge" onclick="window.location.href='produto.html'" aria-label="Campo de pesquisa">
+                <button onclick="window.location.href='produto.html'" aria-label="Buscar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Redução de poluição visual (Heurística 8 - Estética e Design Minimalista) -->
+        <!-- Substitui a confusão de 5 banners simultâneos -->
+        <div class="hero-banner">
+            <h2>Mega Oferta Prime</h2>
+            <p>Até 80% OFF em dispositivos e casa inteligentes</p>
+        </div>
+        <div class="dots">
+            <span class="dot active" aria-label="Banner 1"></span>
+            <span class="dot" aria-label="Banner 2"></span>
+            <span class="dot" aria-label="Banner 3"></span>
+        </div>
+
+        <!-- Correção Heurística 07: Flexibilidade e Eficiência de Uso -->
+        <!-- Inserido para atender à Persona Mariana (recompra ágil) -->
+        <h3 class="section-title">Compre Novamente</h3>
+        <div class="reorder-container">
+            <div class="reorder-scroll">
+                <div class="reorder-item">
+                    <div class="reorder-img">Cápsulas Três Corações</div>
+                    <div class="reorder-title" title="100 Cápsulas Três Corações">100 Cápsulas...</div>
+                    <div class="reorder-price">R$ 204,99</div>
+                    <!-- Correção Heurística 03: Controle do utilizador (Undo na adição) -->
+                    <button class="reorder-btn" onclick="addToCart('Cápsulas de Café')">Adicionar</button>
+                </div>
+                <div class="reorder-item">
+                    <div class="reorder-img">Gel CeraVe</div>
+                    <div class="reorder-title" title="Gel de Limpeza CeraVe">Gel de Limpeza...</div>
+                    <div class="reorder-price">R$ 48,99</div>
+                    <button class="reorder-btn" onclick="addToCart('Gel CeraVe')">Adicionar</button>
+                </div>
+                <div class="reorder-item">
+                    <div class="reorder-img">Filtro de Papel 103</div>
+                    <div class="reorder-title" title="Filtro de Papel 103">Filtro de Papel...</div>
+                    <div class="reorder-price">R$ 15,00</div>
+                    <button class="reorder-btn" onclick="addToCart('Filtro de Papel')">Adicionar</button>
+                </div>
+                <div class="reorder-item">
+                    <div class="reorder-img">Ração Shih Tzu</div>
+                    <div class="reorder-title" title="Ração Premier 2.5kg">Ração Premier...</div>
+                    <div class="reorder-price">R$ 75,90</div>
+                    <button class="reorder-btn" onclick="addToCart('Ração Shih Tzu')">Adicionar</button>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="section-title">Navegar por Categorias</h3>
+        <div class="category-container">
+            <div class="category-grid">
+                <!-- Mantive o fluxo para a tela do produto simulando a navegação da persona Lucas -->
+                <div class="category-card" onclick="window.location.href='produto.html'">Eletrônicos e TI</div>
+                <div class="category-card">Beleza e Cuidado</div>
+                <div class="category-card">Casa e Cozinha</div>
+                <div class="category-card">Livros e Kindle</div>
+                <div class="category-card">Brinquedos</div>
+                <div class="category-card">Pet Shop</div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Aviso Acadêmico:</strong> Protótipo responsivo desenvolvido para a disciplina de Interação Humano-Computador (IHC).</p>
+            <p>Esta é uma simulação de interface (estudo de caso). Nenhuma compra real pode ser efetuada.</p>
+            <p style="margin-top: 10px;">&copy; 2026 Grupo IF/Amazon - TSI</p>
+        </footer>
+    </div>
+
+    <!-- Toast Notification (Feedback de Sistema - Heurística 1 e 3) -->
+    <div id="snackbar" class="toast" role="alert">
+        <span id="toastMsg">Item adicionado.</span>
+        <button class="undo-btn" onclick="undoAction()">Desfazer</button>
+    </div>
+
+    <!-- Navegação Mobile Fixa -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            Início
+        </a>
+        <a href="meus_pedidos.html" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            Você
+        </a>
+        <a href="carrinho.html" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            Carrinho
+        </a>
+        <a href="#" class="nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            Menu
+        </a>
+    </nav>
+
+    <script>
+        let cartCount = 0;
+        let toastTimeout;
+
+        function addToCart(itemName) {
+            cartCount++;
+            document.getElementById('cartBadge').innerText = cartCount;
+            
+            const snackbar = document.getElementById("snackbar");
+            document.getElementById('toastMsg').innerText = itemName + " no carrinho.";
+            
+            // Reset animation
+            snackbar.className = "toast";
+            void snackbar.offsetWidth; // trigger reflow
+            snackbar.className = "toast show";
+            
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(function(){ 
+                snackbar.className = snackbar.className.replace("show", ""); 
+            }, 4500); // Exibe por 4.5 segundos
+        }
+
+        function undoAction() {
+            if(cartCount > 0) cartCount--;
+            document.getElementById('cartBadge').innerText = cartCount;
+            
+            const snackbar = document.getElementById("snackbar");
+            snackbar.className = snackbar.className.replace("show", "");
+            clearTimeout(toastTimeout);
+            
+            // Opcional: Feedback visual de que foi desfeito (pode usar um alert leve ou outro toast)
+            setTimeout(() => alert("Ação desfeita. Item removido do carrinho."), 300);
+        }
+    </script>
+</body>
+</html>

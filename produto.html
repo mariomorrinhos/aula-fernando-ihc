@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produto - Protótipo Acadêmico</title>
+    <style>
+        /* Reset e Base */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f3f3f3; 
+            padding-bottom: 90px; /* Espaço para o Sticky CTA no mobile */
+        }
+        
+        /* Container Principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        /* Header */
+        header { 
+            background-color: #232f3e; 
+            padding: 10px 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            color: white; 
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-left, .header-right { display: flex; align-items: center; gap: 15px; }
+        .back-btn { font-size: 20px; color: white; text-decoration: none; padding: 5px;}
+        .logo { font-size: 20px; font-weight: bold; margin-top: -5px;}
+        
+        .cart-icon { font-size: 24px; cursor: pointer; position: relative; }
+        .cart-count { 
+            position: absolute; 
+            top: -5px; 
+            right: -10px; 
+            background: #f08804; 
+            color: #111; 
+            border-radius: 50%; 
+            padding: 2px 6px; 
+            font-size: 12px; 
+            font-weight: bold; 
+        }
+
+        /* Layout do Produto (Mobile First) */
+        .product-layout {
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        /* Galeria de Imagens */
+        .product-gallery {
+            background-color: #f8f8f8; 
+            height: 300px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative;
+            border-bottom: 1px solid #eee;
+        }
+        .product-placeholder {
+            color: #888;
+            font-size: 18px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .dots { 
+            position: absolute; 
+            bottom: 15px; 
+            width: 100%; 
+            text-align: center; 
+        }
+        .dot { 
+            display: inline-block; 
+            width: 8px; 
+            height: 8px; 
+            background-color: #ccc; 
+            border-radius: 50%; 
+            margin: 0 4px; 
+            cursor: pointer;
+        }
+        .dot.active { background-color: #333; }
+
+        /* Informações do Produto */
+        .product-info {
+            padding: 20px;
+        }
+        
+        .title { 
+            font-size: 18px; 
+            line-height: 1.4; 
+            margin: 0 0 10px 0; 
+            font-weight: 500; 
+            color: #0f1111;
+        }
+        
+        /* Link para Avaliações */
+        .rating { 
+            display: inline-flex;
+            align-items: center;
+            color: #007185; 
+            font-size: 14px; 
+            margin-bottom: 15px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            padding: 5px 0;
+        }
+        .rating:hover { text-decoration: underline; color: #c45500;}
+        .stars { color: #de7921; font-size: 16px; margin-right: 5px;}
+        
+        .price-block { margin-bottom: 15px; }
+        .price { font-size: 32px; font-weight: 400; color: #0f1111; display: flex; align-items: flex-start;}
+        .price span.symbol { font-size: 14px; margin-top: 4px; margin-right: 2px;}
+        .price span.cents { font-size: 14px; margin-top: 4px; }
+        
+        .prime-badge { color: #00a8e1; font-weight: bold; font-size: 15px; font-style: italic; margin-bottom: 5px;}
+        .delivery { font-size: 14px; color: #0f1111; margin-bottom: 5px; line-height: 1.4;}
+        .stock { color: #007600; font-size: 16px; font-weight: 500; margin-bottom: 20px; }
+
+        /* Especificações Técnicas */
+        .specs { 
+            border-top: 1px solid #e7e7e7; 
+            padding-top: 20px; 
+            margin-top: 10px; 
+        }
+        .specs h4 { margin: 0 0 15px 0; font-size: 16px; color: #0f1111;}
+        .spec-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .spec-row { 
+            display: flex; 
+            font-size: 14px; 
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 8px;
+        }
+        .spec-label { width: 40%; font-weight: 700; color: #0f1111; }
+        .spec-val { width: 60%; color: #333; }
+
+        /* Correção Heurística 10 (Ajuda e Documentação) */
+        .doc-link { 
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 25px; 
+            color: #007185; 
+            text-decoration: none; 
+            font-size: 14px; 
+            padding: 12px; 
+            background: #f8f8f8; 
+            border: 1px solid #ddd;
+            border-radius: 8px; 
+            text-align: center;
+            transition: background 0.2s;
+        }
+        .doc-link:hover { background: #f0f0f0; }
+
+        /* Sticky CTA (Correção Problema 05) - Mobile */
+        .sticky-bottom { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            background: white; 
+            padding: 15px 20px; 
+            border-top: 1px solid #ddd; 
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1); 
+            z-index: 100; 
+        }
+        .btn-add { 
+            width: 100%; 
+            padding: 15px; 
+            background-color: #ffd814; 
+            border: 1px solid #fcd200; 
+            border-radius: 50px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            box-shadow: 0 2px 5px rgba(213,217,217,.5);
+            transition: background 0.2s;
+        }
+        .btn-add:hover { background-color: #f7ca00; }
+
+        /* Footer */
+        footer { 
+            text-align: center; 
+            font-size: 12px; 
+            color: #555; 
+            padding: 30px 20px; 
+            background: #fff; 
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+        }
+
+        /* Desktop Adjustments */
+        @media (min-width: 768px) {
+            body { padding-bottom: 0; }
+            .product-layout {
+                flex-direction: row;
+                padding: 30px;
+                gap: 40px;
+            }
+            .product-gallery {
+                flex: 1;
+                height: 500px;
+                border: 1px solid #eee;
+                border-radius: 8px;
+            }
+            .product-info {
+                flex: 1;
+                padding: 0;
+            }
+            .title { font-size: 24px; }
+            
+            /* No desktop, o botão Adicionar ao Carrinho não é sticky no bottom do viewport, 
+               ele fica na coluna da direita (comportamento padrão Amazon) */
+            .sticky-bottom { 
+                position: static; 
+                box-shadow: none; 
+                border-top: none;
+                padding: 20px 0 0 0; 
+                margin-top: 20px;
+            }
+            .btn-add {
+                width: auto;
+                min-width: 250px;
+                padding: 12px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <a href="index.html" class="back-btn" aria-label="Voltar">←</a>
+                <div class="logo">amazon</div>
+            </div>
+            <div class="header-right">
+                <div class="cart-icon" onclick="window.location.href='carrinho.html'" aria-label="Acessar Carrinho">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    <span class="cart-count" id="cartBadge">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="product-layout">
+            <!-- Coluna 1: Galeria (Desktop) / Topo (Mobile) -->
+            <div class="product-gallery">
+                <div class="product-placeholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    <span>Imagem do Produto</span>
+                </div>
+                <div class="dots">
+                    <span class="dot active" aria-label="Imagem 1"></span>
+                    <span class="dot" aria-label="Imagem 2"></span>
+                    <span class="dot" aria-label="Imagem 3"></span>
+                </div>
+            </div>
+
+            <!-- Coluna 2: Informações -->
+            <div class="product-info">
+                <h1 class="title">FLASHFORGE Impressora 3D Ad5X Multicolorida com Nivelamento Automático Totalmente Fechada</h1>
+                
+                <!-- Link para a tela de avaliações (Simula clique na nota) -->
+                <a href="avaliacoes.html" class="rating" aria-label="Ver 65 avaliações de clientes">
+                    <span class="stars">★★★★☆</span> 4,4 (65 avaliações) ➔
+                </a>
+                
+                <div class="price-block">
+                    <div class="price"><span class="symbol">R$</span>3.132<span class="cents">,96</span></div>
+                    <div class="prime-badge">✓ prime</div>
+                </div>
+
+                <div class="delivery">Entrega GRÁTIS <strong>Sábado, 10 de Outubro</strong></div>
+                <div class="delivery">Enviar para Mário - Morrinhos 75650000</div>
+                <div class="stock">Em estoque</div>
+
+                <div class="specs">
+                    <h4>Detalhes Técnicos</h4>
+                    <div class="spec-grid">
+                        <div class="spec-row"><div class="spec-label">Marca</div><div class="spec-val">FLASHFORGE</div></div>
+                        <div class="spec-row"><div class="spec-label">Material</div><div class="spec-val">Metal</div></div>
+                        <div class="spec-row"><div class="spec-label">Cor</div><div class="spec-val">Preto</div></div>
+                        <div class="spec-row"><div class="spec-label">Dimensões</div><div class="spec-val">22P x 22L x 22A cm</div></div>
+                        <div class="spec-row"><div class="spec-label">Peso</div><div class="spec-val">14 Kilogramas</div></div>
+                    </div>
+                </div>
+
+                <!-- Inserido após falha Heurística 10 apontada na Fase 4 -->
+                <a href="#" class="doc-link" aria-label="Abrir documentação técnica">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Ver manual técnico e garantias
+                </a>
+
+                <!-- Sticky CTA (Fixado na base no Mobile, na coluna da direita no Desktop) -->
+                <div class="sticky-bottom">
+                    <button class="btn-add" onclick="window.location.href='carrinho.html'">Adicionar ao carrinho</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Aviso Acadêmico:</strong> Protótipo responsivo. Página desenvolvida simulando as regras de heurísticas de IHC.</p>
+            <p>Nenhum produto real está à venda nesta plataforma acadêmica.</p>
+            <p style="margin-top: 10px;">&copy; 2026 Grupo IF/Amazon - TSI</p>
+        </footer>
+    </div>
+
+</body>
+</html>
